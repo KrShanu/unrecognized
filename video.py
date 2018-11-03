@@ -75,8 +75,8 @@ i_see_you = False
 while True:
     # Grab a single frame of video
 
-    while frame_offset!=0:
-        input_movie.read()
+    while frame_offset!= 0:
+        ret, frame = input_movie.read()
         frame_offset -= 1
         frame_number += 1
 
@@ -85,7 +85,7 @@ while True:
 
     frame_number += 1
 
-    # if frame_number <= 890: continue
+    if frame_number <= 3600: continue
     #if frame_number >= 3000: break
 
     # if frame_number % 5 != 0: continue
@@ -114,6 +114,8 @@ while True:
     for face_encoding in face_encodings:
         # See if the face is a match for the known face(s)
         # start = time.time()
+
+
         match = face_recognition.compare_faces(known_faces, face_encoding, tolerance=0.60)
         # end = time.time()
         # print('Comparison took {}s'.format(end - start))
@@ -146,6 +148,7 @@ while True:
 
     # Write the resulting image to the output video file
     print("frame {} / {} processed, count {}".format(frame_number, length, detection_count))
+    print("")
     # output_movie.write(frame)
     cv2.imshow('Video', frame)
 
@@ -153,7 +156,7 @@ while True:
         current_second = int(frame_number // fps)
         is_tom_there[current_second] = 1
 
-        frame_offset = fps - (frame_number % fps)
+        frame_offset = int(fps - (frame_number % fps))
         # frame_number += frame_offset  #0-> fps, fps-1 -> fps
         # cvSetCaptureProperty(capture, CV_CAP_PROP_POS_FRAMES, frameIndex);
 
@@ -167,7 +170,7 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-with open(path, mode = 'a+') as my_csv:
+with open(path, mode = 'w') as my_csv:
     for i in range(0, length_in_seconds):
         my_csv_writer = csv.writer(my_csv, quoting=csv.QUOTE_MINIMAL)
 
