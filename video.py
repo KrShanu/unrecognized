@@ -1,7 +1,7 @@
 import face_recognition
 import cv2
 import csv
-
+import sys
 import time
 
 # This is a demo of running face recognition on a video file and saving the results to a new video file.
@@ -38,6 +38,13 @@ face_encodings = []
 face_names = []
 frame_number = 0
 
+FPS = 24
+length_in_seconds = (length // FPS ) + 5
+
+is_tom_there = [0] * length_in_seconds
+
+current_second = 0;
+
 path = 'output.csv'
 
 #eg: index == 99, FPS == 100, nearestSecond => 0th
@@ -56,17 +63,19 @@ def outputResultToCSV(second, value, path):
 THRESHOLD = 1
 positive_detection = False #this represents main out value. Should it just be int?
 detection_count = 0
-FPS = 30
+
+
+i_see_you = False
 
 while True:
     # Grab a single frame of video
+
     ret, frame = input_movie.read()
     frame_number += 1
 
-    if frame_number <= 2000: continue
-    if frame_number >= 3000: break
+    #if frame_number <= 2000: continue
+    #if frame_number >= 3000: break
 
-    #TODO:replace this with threshold code, or combine threshold with larger modulus
     # if frame_number % 5 != 0: continue
 
     # Quit when the input video file ends
@@ -102,7 +111,9 @@ while True:
         name = None
         if match[0]:
             name = "Tom Cruise"
+            i_see_you = True
             detection_count += 1
+            print("Scientology")
         # elif match[1]:
             # name = "Alex Lacamoire"
 
@@ -123,17 +134,41 @@ while True:
 
     # Write the resulting image to the output video file
     print("frame {} / {} processed, count {}".format(frame_number, length, detection_count))
-    output_movie.write(frame)
+    # output_movie.write(frame)
     cv2.imshow('Video', frame)
 
+    if i_see_you:
+        current_second = frame_number // FPS
+        is_tom_there[current_second] = 1
+
+        frame_offset = FPS - (frame_number % FPS)
+        frame_number += frame_offset  #0-> FPS, FPS-1 -> FPS
+
+        i_see_you = False
+
+    if frame_number >= length:
+        break
+
+
+    # Hit 'q' on the keyboard to quit!
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+with open(path, mode = 'a+') as my_csv:
+    for i in range(0, length_in_seconds):
+        my_csv_writer = csv.writer(my_csv, quoting=csv.QUOTE_MINIMAL)
+
+        my_csv_writer.writerow([i, is_tom_there[i]])
+
+"""
     positiveDetection = detection_count >= THRESHOLD
-    
+
     #We have some threshold for positive detection, eg: six images in a second
     if positiveDetection == True:
 
         #write output to file
         outputResultToCSV(indexToNearestSecond(frame_number, FPS), 1, path)   #csv row == [SECOND, INT_VALUE]
-        
+
         #jump index to start of next second
         frame_offset = FPS - (frame_number % FPS)
         frame_number += frame_offset  #0-> FPS, FPS-1 -> FPS
@@ -141,17 +176,14 @@ while True:
         continue
     #else keep searching this second or advance to next
 
-    
+
     if frame_number % FPS == 0 and detection_count == 0:  #FPS == 30, 29 -> 29, 30 -> 0
 
         #write output to file
         outputResultToCSV(indexToNearestSecond(frame_number, FPS), 0, path)  #csv row == [SECOND, INT_VALUE]
         #jump to next second
         continue
-
-    # Hit 'q' on the keyboard to quit!
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+"""
 
 # All done!
 input_movie.release()
