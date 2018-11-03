@@ -38,11 +38,12 @@ face_encodings = []
 face_names = []
 frame_number = 0
 
-fps = video.get(cv2.CAP_PROP_fps)
+fps = input_movie.get(cv2.CAP_PROP_FPS)
 
 length_in_seconds = (length // fps ) + 1
 if length % fps == 0:
     length_in_seconds -= 1
+length_in_seconds = int(length_in_seconds)
 
 is_tom_there = [0] * length_in_seconds
 
@@ -84,7 +85,7 @@ while True:
 
     frame_number += 1
 
-    if frame_number <= 890: continue
+    # if frame_number <= 890: continue
     #if frame_number >= 3000: break
 
     # if frame_number % 5 != 0: continue
@@ -149,7 +150,7 @@ while True:
     cv2.imshow('Video', frame)
 
     if i_see_you:
-        current_second = frame_number // fps
+        current_second = int(frame_number // fps)
         is_tom_there[current_second] = 1
 
         frame_offset = fps - (frame_number % fps)
