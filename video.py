@@ -1,5 +1,6 @@
 import face_recognition
 import cv2
+import csv
 
 import time
 
@@ -37,10 +38,12 @@ face_encodings = []
 face_names = []
 frame_number = 0
 
+path = 'output.csv'
+
 def isThresholdPassed(count,threshold):
     if count < threshold:
         return False
-    else
+    else:
         return True
 
 #eg: index == 99, FPS == 100, nearestSecond => 0th
@@ -52,9 +55,8 @@ def indexToNearestSecond(index, FPS):
 #input: int second, int value (1 or 0), path to output
 #outputs [SECOND, VALUE] to path as csv row
 def outputResultToCSV(second, value, path):
-    with open(path, mode = 'a') as my_csv:
+    with open(path, mode = 'a+', newline='') as my_csv:
             my_csv_writer = csv.writer(my_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-
             my_csv_writer.writerow([second, value])
 
 THRESHOLD = 1
@@ -132,13 +134,14 @@ while True:
     positiveDetection = isThresholdPassed(detection_count, THRESHOLD)
     
     #We have some threshold for positive detection, eg: six images in a second
-    if positiveDetection = True:
+    if positiveDetection == True:
 
         #write output to file
         outputResultToCSV(indexToNearestSecond(frame_number, FPS), 1, path)   #csv row == [SECOND, INT_VALUE]
         
         #jump index to start of next second
-        frame_number += (FPS - frame_number)  #0-> FPS, FPS-1 -> FPS
+        frame_offset = FPS - (frame_number % FPS)
+        frame_number += frame_offset  #0-> FPS, FPS-1 -> FPS
         continue
     #else keep searching this second or advance to next
 
@@ -146,7 +149,7 @@ while True:
     if frame_number % FPS == 0 or (frame_number % FPS > FPS /2):  #FPS == 30, 29 -> 29, 30 -> 0
 
         #write output to file
-        outputResult(indexToNearestSecond(frame_number, FPS), 0, path)  #csv row == [SECOND, INT_VALUE]
+        outputResultToCSV(indexToNearestSecond(frame_number, FPS), 0, path)  #csv row == [SECOND, INT_VALUE]
         #jump to next second
         continue
 
