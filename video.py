@@ -38,8 +38,11 @@ face_encodings = []
 face_names = []
 frame_number = 0
 
-FPS = 24
-length_in_seconds = (length // FPS ) + 5
+fps = video.get(cv2.CAP_PROP_fps)
+
+length_in_seconds = (length // fps ) + 1
+if length % fps == 0:
+    length_in_seconds -= 1
 
 is_tom_there = [0] * length_in_seconds
 
@@ -47,11 +50,11 @@ current_second = 0;
 
 path = 'output.csv'
 
-#eg: index == 99, FPS == 100, nearestSecond => 0th
-#eg:index == 100, FPS == 100, nearestSecond => 1st
-def indexToNearestSecond(index, FPS):
-    if isinstance(index, int) and isinstance(FPS, int):
-        return index // FPS #integer quotient
+#eg: index == 99, fps == 100, nearestSecond => 0th
+#eg:index == 100, fps == 100, nearestSecond => 1st
+def indexToNearestSecond(index, fps):
+    if isinstance(index, int) and isinstance(fps, int):
+        return index // fps #integer quotient
 
 #input: int second, int value (1 or 0), path to output
 #outputs [SECOND, VALUE] to path as csv row
@@ -81,7 +84,7 @@ while True:
 
     frame_number += 1
 
-    #if frame_number <= 2000: continue
+    if frame_number <= 890: continue
     #if frame_number >= 3000: break
 
     # if frame_number % 5 != 0: continue
@@ -146,11 +149,11 @@ while True:
     cv2.imshow('Video', frame)
 
     if i_see_you:
-        current_second = frame_number // FPS
+        current_second = frame_number // fps
         is_tom_there[current_second] = 1
 
-        frame_offset = FPS - (frame_number % FPS)
-        # frame_number += frame_offset  #0-> FPS, FPS-1 -> FPS
+        frame_offset = fps - (frame_number % fps)
+        # frame_number += frame_offset  #0-> fps, fps-1 -> fps
         # cvSetCaptureProperty(capture, CV_CAP_PROP_POS_FRAMES, frameIndex);
 
         i_see_you = False
@@ -176,20 +179,20 @@ with open(path, mode = 'a+') as my_csv:
     if positiveDetection == True:
 
         #write output to file
-        outputResultToCSV(indexToNearestSecond(frame_number, FPS), 1, path)   #csv row == [SECOND, INT_VALUE]
+        outputResultToCSV(indexToNearestSecond(frame_number, fps), 1, path)   #csv row == [SECOND, INT_VALUE]
 
         #jump index to start of next second
-        frame_offset = FPS - (frame_number % FPS)
-        frame_number += frame_offset  #0-> FPS, FPS-1 -> FPS
+        frame_offset = fps - (frame_number % fps)
+        frame_number += frame_offset  #0-> fps, fps-1 -> fps
         detection_count = 0
         continue
     #else keep searching this second or advance to next
 
 
-    if frame_number % FPS == 0 and detection_count == 0:  #FPS == 30, 29 -> 29, 30 -> 0
+    if frame_number % fps == 0 and detection_count == 0:  #fps == 30, 29 -> 29, 30 -> 0
 
         #write output to file
-        outputResultToCSV(indexToNearestSecond(frame_number, FPS), 0, path)  #csv row == [SECOND, INT_VALUE]
+        outputResultToCSV(indexToNearestSecond(frame_number, fps), 0, path)  #csv row == [SECOND, INT_VALUE]
         #jump to next second
         continue
 """
