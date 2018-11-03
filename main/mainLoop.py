@@ -5,7 +5,6 @@ def isThresholdPassed(count,threshold):
         return True
 
 THRESHOLD = 1
-lastFrameInSecond = False
 positive_detection = False #this represents main out value. Should it just be int?
 frame_index = 0
 detections = 0
@@ -42,5 +41,5 @@ while (not endOfFile):
         lastFrameInSecond = False
         continue
 
-    frame_index ++
+    frame_index += 1
     
