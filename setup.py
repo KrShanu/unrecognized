@@ -2,10 +2,10 @@ from setuptools import setup
 
 
 def readme():
-    with open('README.md') as f:
+    with open('README.md', encoding="utf8") as f:
         return f.read()
 
-with open('requirements.txt') as f:
+with open('requirements.txt', encoding="utf8") as f:
     required = f.read().splitlines()
 
 setup(name='faced',
