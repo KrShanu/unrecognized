@@ -63,6 +63,7 @@ def outputResultToCSV(second, value, path):
 THRESHOLD = 1
 positive_detection = False #this represents main out value. Should it just be int?
 detection_count = 0
+frame_offset = 0
 
 
 i_see_you = False
@@ -70,7 +71,14 @@ i_see_you = False
 while True:
     # Grab a single frame of video
 
+    while frame_offset!=0:
+        input_movie.read()
+        frame_offset -= 1
+        frame_number += 1
+
     ret, frame = input_movie.read()
+
+
     frame_number += 1
 
     #if frame_number <= 2000: continue
@@ -142,7 +150,8 @@ while True:
         is_tom_there[current_second] = 1
 
         frame_offset = FPS - (frame_number % FPS)
-        frame_number += frame_offset  #0-> FPS, FPS-1 -> FPS
+        # frame_number += frame_offset  #0-> FPS, FPS-1 -> FPS
+        # cvSetCaptureProperty(capture, CV_CAP_PROP_POS_FRAMES, frameIndex);
 
         i_see_you = False
 
