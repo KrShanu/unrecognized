@@ -37,6 +37,31 @@ face_encodings = []
 face_names = []
 frame_number = 0
 
+def isThresholdPassed(count,threshold):
+    if count < threshold:
+        return False
+    else
+        return True
+
+#eg: index == 99, FPS == 100, nearestSecond => 0th
+#eg:index == 100, FPS == 100, nearestSecond => 1st
+def indexToNearestSecond(index, FPS):
+    if isinstance(index, int) and isinstance(FPS, int):
+        return index // FPS #integer quotient
+
+#input: int second, int value (1 or 0), path to output
+#outputs [SECOND, VALUE] to path as csv row
+def outputResultToCSV(second, value, path):
+    with open(path, mode = 'a') as my_csv:
+            my_csv_writer = csv.writer(my_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+            my_csv_writer.writerow([second, value])
+
+THRESHOLD = 1
+positive_detection = False #this represents main out value. Should it just be int?
+detection_count = 0
+FPS = 30
+
 while True:
     # Grab a single frame of video
     ret, frame = input_movie.read()
@@ -45,6 +70,7 @@ while True:
     if frame_number <= 2000: continue
     if frame_number >= 3000: break
 
+    #TODO:replace this with threshold code, or combine threshold with larger modulus
     if frame_number % 5 != 0: continue
 
     # Quit when the input video file ends
@@ -102,6 +128,27 @@ while True:
     print("frame {} / {} processed".format(frame_number, length))
     output_movie.write(frame)
     # cv2.imshow('Video', frame)
+
+    positiveDetection = isThresholdPassed(detection_count, THRESHOLD)
+    
+    #We have some threshold for positive detection, eg: six images in a second
+    if positiveDetection = True:
+
+        #write output to file
+        outputResultToCSV(indexToNearestSecond(frame_number, FPS), 1, path)   #csv row == [SECOND, INT_VALUE]
+        
+        #jump index to start of next second
+        frame_number += (FPS - frame_number)  #0-> FPS, FPS-1 -> FPS
+        continue
+    #else keep searching this second or advance to next
+
+    
+    if frame_number % FPS == 0 or (frame_number % FPS > FPS /2):  #FPS == 30, 29 -> 29, 30 -> 0
+
+        #write output to file
+        outputResult(indexToNearestSecond(frame_number, FPS), 0, path)  #csv row == [SECOND, INT_VALUE]
+        #jump to next second
+        continue
 
     # Hit 'q' on the keyboard to quit!
     # if cv2.waitKey(1) & 0xFF == ord('q'):
