@@ -40,12 +40,6 @@ frame_number = 0
 
 path = 'output.csv'
 
-def isThresholdPassed(count,threshold):
-    if count < threshold:
-        return False
-    else:
-        return True
-
 #eg: index == 99, FPS == 100, nearestSecond => 0th
 #eg:index == 100, FPS == 100, nearestSecond => 1st
 def indexToNearestSecond(index, FPS):
@@ -73,7 +67,7 @@ while True:
     if frame_number >= 3000: break
 
     #TODO:replace this with threshold code, or combine threshold with larger modulus
-    if frame_number % 5 != 0: continue
+    # if frame_number % 5 != 0: continue
 
     # Quit when the input video file ends
     if not ret:
@@ -108,6 +102,7 @@ while True:
         name = None
         if match[0]:
             name = "Tom Cruise"
+            detection_count += 1
         # elif match[1]:
             # name = "Alex Lacamoire"
 
@@ -127,11 +122,11 @@ while True:
         cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
 
     # Write the resulting image to the output video file
-    print("frame {} / {} processed".format(frame_number, length))
+    print("frame {} / {} processed, count {}".format(frame_number, length, detection_count))
     output_movie.write(frame)
-    # cv2.imshow('Video', frame)
+    cv2.imshow('Video', frame)
 
-    positiveDetection = isThresholdPassed(detection_count, THRESHOLD)
+    positiveDetection = detection_count >= THRESHOLD
     
     #We have some threshold for positive detection, eg: six images in a second
     if positiveDetection == True:
@@ -142,11 +137,12 @@ while True:
         #jump index to start of next second
         frame_offset = FPS - (frame_number % FPS)
         frame_number += frame_offset  #0-> FPS, FPS-1 -> FPS
+        detection_count = 0
         continue
     #else keep searching this second or advance to next
 
     
-    if frame_number % FPS == 0 or (frame_number % FPS > FPS /2):  #FPS == 30, 29 -> 29, 30 -> 0
+    if frame_number % FPS == 0 and detection_count == 0:  #FPS == 30, 29 -> 29, 30 -> 0
 
         #write output to file
         outputResultToCSV(indexToNearestSecond(frame_number, FPS), 0, path)  #csv row == [SECOND, INT_VALUE]
@@ -154,8 +150,8 @@ while True:
         continue
 
     # Hit 'q' on the keyboard to quit!
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-        # break
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
 # All done!
 input_movie.release()
