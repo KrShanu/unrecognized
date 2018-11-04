@@ -1,4 +1,4 @@
-numpy
 tensorflow
-face_recognition
 opencv-python
+dlib
+face_recognition
