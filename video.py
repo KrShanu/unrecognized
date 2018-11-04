@@ -4,12 +4,7 @@ import csv
 import sys
 import time
 
-# This is a demo of running face recognition on a video file and saving the results to a new video file.
-#
-# PLEASE NOTE: This example requires OpenCV (the `cv2` library) to be installed only to read from your webcam.
-# OpenCV is *not* required to use the face_recognition library. It's only required if you want to run this
-# specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
-
+# For benchmarks
 start = time.time()
 
 # Open the input movie file
@@ -32,12 +27,8 @@ output_movie = cv2.VideoWriter('output.avi', fourcc, fps, (640, 360))
 lmm_image = face_recognition.load_image_file("image.jpg")
 lmm_face_encoding = face_recognition.face_encodings(lmm_image)[0]
 
-# al_image = face_recognition.load_image_file("alex-lacamoire.png")
-# al_face_encoding = face_recognition.face_encodings(al_image)[0]
-
 known_faces = [
-    lmm_face_encoding,
-    # al_face_encoding
+    lmm_face_encoding
 ]
 
 # Initialize some variables
@@ -62,7 +53,6 @@ frame_offset = 0
 i_see_you = False
 
 while True:
-    # Grab a single frame of video
 
     while frame_offset!=0:
         print("frame {} / {} processed, offset {}".format(frame_number, length, frame_offset))
@@ -72,14 +62,13 @@ while True:
         frame_offset -= 1
         frame_number += 1
 
+    # Grab a single frame of video
     ret, frame = input_movie.read()
-
-
     frame_number += 1
 
+    # Debug
     # if frame_number <= 890: continue
-    #if frame_number >= 3000: break
-
+    # if frame_number >= 3000: break
     # if frame_number % 5 != 0: continue
 
     # Quit when the input video file ends
@@ -90,8 +79,6 @@ while True:
     rgb_frame = frame[:, :, ::-1]
 
     # Find all the faces and face encodings in the current frame of video
-
-
     # start = time.time()
     face_locations = face_recognition.face_locations(rgb_frame)
     # end = time.time()
@@ -163,31 +150,6 @@ with open(path, mode = 'w+', newline='') as my_csv:
     for i in range(0, length_in_seconds):
         my_csv_writer = csv.writer(my_csv, quoting=csv.QUOTE_MINIMAL)
         my_csv_writer.writerow([i, is_tom_there[i]])
-
-"""
-    positiveDetection = detection_count >= THRESHOLD
-
-    #We have some threshold for positive detection, eg: six images in a second
-    if positiveDetection == True:
-
-        #write output to file
-        outputResultToCSV(indexToNearestSecond(frame_number, fps), 1, path)   #csv row == [SECOND, INT_VALUE]
-
-        #jump index to start of next second
-        frame_offset = fps - (frame_number % fps)
-        frame_number += frame_offset  #0-> fps, fps-1 -> fps
-        detection_count = 0
-        continue
-    #else keep searching this second or advance to next
-
-
-    if frame_number % fps == 0 and detection_count == 0:  #fps == 30, 29 -> 29, 30 -> 0
-
-        #write output to file
-        outputResultToCSV(indexToNearestSecond(frame_number, fps), 0, path)  #csv row == [SECOND, INT_VALUE]
-        #jump to next second
-        continue
-"""
 
 # All done!
 input_movie.release()
