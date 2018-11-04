@@ -20,8 +20,8 @@ fps = round(input_movie.get(cv2.CAP_PROP_FPS))
 print('{} @ {} fps'.format(movie_filename, fps))
 
 # Create an output movie file (make sure resolution/frame rate matches input video!)
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
-output_movie = cv2.VideoWriter('output.avi', fourcc, fps, (640, 360))
+# fourcc = cv2.VideoWriter_fourcc(*'XVID')
+# output_movie = cv2.VideoWriter('output.avi', fourcc, fps, (640, 360))
 
 # Load some sample pictures and learn how to recognize them.
 lmm_image = face_recognition.load_image_file("image.jpg")
@@ -57,8 +57,8 @@ while True:
     while frame_offset!=0:
         print("frame {} / {} processed, offset {}".format(frame_number, length, frame_offset))
         ret, frame = input_movie.read()
-        output_movie.write(frame)
-        cv2.imshow('Video', frame)
+        # output_movie.write(frame)
+        # cv2.imshow('Video', frame)
         frame_offset -= 1
         frame_number += 1
 
@@ -104,7 +104,7 @@ while True:
             name = "Wanted"
             i_see_you = True
             detection_count += 1
-            print("Scientology")
+            print("Reference Actor Found")
         # elif match[1]:
             # name = "Alex Lacamoire"
 
@@ -126,8 +126,8 @@ while True:
 
     # Write the resulting image to the output video file
     print("frame {} / {} processed, count {}".format(frame_number, length, detection_count))
-    output_movie.write(frame)
-    cv2.imshow('Video', frame)
+    # output_movie.write(frame)
+    # cv2.imshow('Video', frame)
 
     if i_see_you:
         current_second = frame_number // fps
