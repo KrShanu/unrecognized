@@ -14,27 +14,40 @@ import cv2
 video_capture = cv2.VideoCapture(0)
 
 # Load a sample picture and learn how to recognize it.
-obama_image = face_recognition.load_image_file("obama.jpg")
+obama_image = face_recognition.load_image_file("sarav.jpg")
 obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
 
 # Load a second sample picture and learn how to recognize it.
-biden_image = face_recognition.load_image_file("biden.jpg")
+biden_image = face_recognition.load_image_file("daniel.jpg")
 biden_face_encoding = face_recognition.face_encodings(biden_image)[0]
 
 # Load a second sample picture and learn how to recognize it.
 ciara_image = face_recognition.load_image_file("ciara.jpg")
 ciara_face_encoding = face_recognition.face_encodings(ciara_image)[0]
 
+# Load a second sample picture and learn how to recognize it.
+gytis_image = face_recognition.load_image_file("gytis.jpg")
+gytis_face_encoding = face_recognition.face_encodings(gytis_image)[0]
+
+
+# Load a second sample picture and learn how to recognize it.
+joe_image = face_recognition.load_image_file("joe.jpg")
+joe_face_encoding = face_recognition.face_encodings(joe_image)[0]
+
 # Create arrays of known face encodings and their names
 known_face_encodings = [
     obama_face_encoding,
     biden_face_encoding,
-    ciara_face_encoding
+    ciara_face_encoding,
+    joe_face_encoding,
+    gytis_face_encoding
 ]
 known_face_names = [
     "Sarav",
     "Daniel",
-    "Ciara"
+    "Ciara",
+    "Joe",
+    "Gytis"
 ]
 
 # Initialize some variables

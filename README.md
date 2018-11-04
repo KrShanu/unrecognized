@@ -2,7 +2,7 @@
 
 A quick hack for recognizing faces.
 
-![Logo](/data/unrecognizable.png)
+![Logo](/data/unrecognized.jpg)
 
 For instruction on face, see [here](https://github.com/iitzco/faced.git)
 
