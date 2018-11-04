@@ -1,4 +1,4 @@
-tensorflow
+tensorflow-gpu
 opencv-python
 dlib
 face_recognition
